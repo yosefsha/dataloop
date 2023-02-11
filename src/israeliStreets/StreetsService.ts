@@ -19,7 +19,7 @@ interface DBStreet{
 }
 
 
-export class StreetsApi{
+export class StreetsService{
 	private static _axios: Axios
 	private static get axios(){
 		if(!this._axios){

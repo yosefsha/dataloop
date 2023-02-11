@@ -3,8 +3,12 @@
  - Public repository with the data management team's technichal interview assignment inside  
  ---
  ## Assignment specification:
-
+Your assignment is to insert data about street names in israel to a database, using some kind of a messaging / data streaming service.\
+The assignment is to be done in nodejs + Typescript.\
+Inside of the repository you will find a street
+The data is provided to you \
 Raw Data - https://data.gov.il/dataset/israel-streets-synom/resource/1b14e41c-85b3-4c21-bdce-9fe48185ffca
+
 ---
 ## Provided dependencies:
  Provided is a docker-compose file which contains all of the dependencies that you will need to complete the assignment.\
