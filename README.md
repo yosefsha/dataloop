@@ -19,12 +19,12 @@ You will need to create two services:
   - Will be activated by CLI, accepting a city name from the list of cities
   - Will query the StreetsService for all streets of that city
   - Will publish to the queuing platform the streets it needs to insert
-  - The streets need to contain all data from the api
 
 Consuming service specification:
-  - Will consume from the queue
+  - Will consume from the messaging queue
   - Will persist the streets data to the selected database
 
+The persisted streets need to contain all data from the api
 ---
 ## Provided dependencies:
  Provided is a docker-compose file which contains all of the dependencies that you will need to complete the assignment.\

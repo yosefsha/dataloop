@@ -2,11 +2,11 @@ import axios, { Axios } from 'axios';
 import { omit } from 'lodash';
 import { cities, city, enlishNameByCity } from './cities';
 
-export interface Street extends Omit<DBStreet, '_id'>{
+export interface Street extends Omit<ApiStreet, '_id'>{
 	streetId: number
 }
 
-interface DBStreet{
+interface ApiStreet{
 	_id: number
 	region_code: number
 	region_name: string
@@ -33,8 +33,8 @@ export class StreetsService{
 		if (!results || !results.length) {
 			throw new Error('No streets found for city: ' + city)
 		}
-		const streets: Pick<Street, 'streetId' | 'street_name'>[]  = results.map((street: DBStreet) => { 
-			return {streetId: street._id, name: street.street_name}
+		const streets: Pick<Street, 'streetId' | 'street_name'>[]  = results.map((street: ApiStreet) => { 
+			return {streetId: street._id, name: street.street_name.trim()}
 		})
 		return {city, streets}
 	}
@@ -45,9 +45,9 @@ export class StreetsService{
 		if (!results || !results.length) {
 			throw new Error('No street found for id: ' + id)
 		}
-		const dbStreet: DBStreet = results[0]
+		const dbStreet: ApiStreet = results[0]
 		const cityName = enlishNameByCity[dbStreet.city_name]
-		const street: Street = {...omit<DBStreet>(dbStreet, '_id'), streetId: dbStreet._id, city_name: cityName}
+		const street: Street = {...omit<ApiStreet>(dbStreet, '_id'), streetId: dbStreet._id, city_name: cityName, region_name: dbStreet.region_name.trim(), street_name: dbStreet.street_name.trim()}
 		return street
 	}
 }
