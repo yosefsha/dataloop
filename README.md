@@ -3,26 +3,26 @@
  - Public repository with the data management team's technichal interview assignment inside  
  ---
  ## Assignment specification:
-Your assignment is to insert data about street names in israel to a database, using some kind of a messaging / data streaming platform.\
+Your assignment is to insert data about street names in israel to a database, using some kind of a queueing platform.\
 The assignment is to be done in nodejs + Typescript (node version 16.X, npm version 8.X, typescript version 4.X).\
 Inside of the repository you will find a StreetsService class which provides you the data from the api.\
 The list of cities is provided inside of the cities.ts file.\
 Feel free to make changes to the StreetsService class if you feel they are necessary.
  - If you want to take a look at the raw data - https://data.gov.il/dataset/israel-streets-synom/resource/1b14e41c-85b3-4c21-bdce-9fe48185ffca
 
-To complete the assignment you will need to select a database, sql or no-sql (for example: mongo, singlestore) and a messaging/ data streaming service (for example - rabbitmq, kafka), either from the provided dependencies, or one of your choice (commit it to your solution if you chose a different one).\
+To complete the assignment you will need to select a database, sql or no-sql (for example: mongo, singlestore) and a queueing service (for example - rabbitmq, kafka), either from the provided dependencies, or one of your choice (commit it to your solution if you chose a different one).\
 You will need to create two services:
- - Publishing service - A service that will get the data from the StreetsService and publish it to the messaging/streaming platform
- - A service that will consume the data from the messaging/streaming service and persisit it to the database
+ - Publishing service - A service that will get the data from the StreetsService and publish it to the queuing platform
+ - A service that will consume the data from the queuing service and persisit it to the database
 
  Publishing service specification:
   - Will be activated by CLI, accepting a city name from the list of cities
   - Will query the StreetsService for all streets of that city
-  - Will publish to the messaging/streaming platform the streets it needs to insert
+  - Will publish to the queuing platform the streets it needs to insert
   - The streets need to contain all data from the api
 
 Consuming service specification:
-  - Will consume from the messaging queue
+  - Will consume from the queue
   - Will persist the streets data to the selected database
 
 ---
