@@ -24,7 +24,6 @@ Consuming service specification:
   - Will consume from the messaging queue
   - Will persist the streets data to the selected database
 
-When you finish the assignment please push it to a different repository and send me the link via email
 The persisted streets need to contain all data from the api
 ---
 ## Provided dependencies:
@@ -57,6 +56,6 @@ If you would like to a different service for a database/queueing system feel fre
 
 
 ---
-
+When you finish the assignment please push it to a different repository and send me the link via email\
 If you have any questions about the assignment you can send them to shachar.h@dataloop.ai\
 Good luck!
