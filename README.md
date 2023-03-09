@@ -24,6 +24,7 @@ Consuming service specification:
   - Will consume from the messaging queue
   - Will persist the streets data to the selected database
 
+When you finish the assignment please push it to a different repository and send me the link via email
 The persisted streets need to contain all data from the api
 ---
 ## Provided dependencies:
