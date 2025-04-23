@@ -57,5 +57,5 @@ If you would like to a different service for a database/queueing system feel fre
 
 ---
 When you finish the assignment please push it to a different repository and send me the link via email\
-If you have any questions about the assignment you can send them to shachar.h@dataloop.ai\
+If you have any questions about the assignment you can send them to info@dataloop.ai or reut@dataloop.ai\
 Good luck!
