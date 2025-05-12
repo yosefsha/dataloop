@@ -10,8 +10,8 @@ const connectToMongo = async () => {
 
 // MongoDB schema and model
 const streetSchema = new mongoose.Schema({
-  name: String,
-  city: String,
+  streetId: Number,
+  street_name: String,
 });
 const Street = mongoose.model('Street', streetSchema);
 
@@ -38,19 +38,21 @@ const consumeFromQueue = async (channel: amqplib.Channel, queue: string) => {
 
   console.log(`Waiting for messages in queue: ${queue}`);
   interface StreetData {
-    name: string;
-    city: string;
+    streetId: number;
+    street_name: string;
   }
 
   channel.consume(queue, async (msg: amqplib.ConsumeMessage | null) => {
     if (msg) {
+      console.log('Received message raw:',msg.content.toString())
       const streetData: StreetData = JSON.parse(msg.content.toString());
       console.log('Received message:', streetData);
 
       // Save to MongoDB
       const street = new Street(streetData);
       await street.save();
-      console.log('Saved to MongoDB:', street);
+      console.log('Saved to MongoDB:', street.toObject());
+      console.log('Saved to MongoDB json:', JSON.stringify(street.toObject(), null, 2));
 
       channel.ack(msg);
     }
