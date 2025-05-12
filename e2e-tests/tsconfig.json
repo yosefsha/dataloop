@@ -1,0 +1,13 @@
+{
+    "extends": "../tsconfig.json", // Ensure you're extending your root tsconfig if necessary
+    "compilerOptions": {
+      "module": "commonjs",
+      "target": "ES6",
+      "strict": true,
+      "esModuleInterop": true,
+      "types": ["jest"],
+      "outDir": "./dist"
+    },
+    "include": ["**/*.ts"]
+  }
+  
