@@ -13,15 +13,15 @@
     "allowJs": true,
     "noImplicitReturns": true,
     "noUnusedLocals": false,
-    "rootDir": "src",
+    "rootDir": ".",
     "outDir": "dist",
-    "watch": false,
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true
   },
   "compileOnSave": false,
   "include": [
     "src/**/*",
+     "e2e-tests/**/*"
   ],
   "exclude": [
     "dist/**/*",
