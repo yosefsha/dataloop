@@ -55,7 +55,11 @@ The persisted streets need to contain all data from the api
 If you would like to a different service for a database/queueing system feel free to do so, as long as they adhere to the assignement specifications
 
 
+
 ---
 When you finish the assignment please push it to a different repository and send me the link via email\
 If you have any questions about the assignment you can send them to info@dataloop.ai or reut@dataloop.ai\
 Good luck!
+
+
+add a service that gets linestrin data for the israeli streets and puts into postgress db . the service consumes israeli streets publisher and invoked for a batch of data

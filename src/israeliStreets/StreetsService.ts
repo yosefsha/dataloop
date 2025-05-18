@@ -3,7 +3,7 @@ import { cities, city, enlishNameByCity } from './cities';
 import { omit } from './utils';
 
 export interface Street extends Omit<ApiStreet, '_id'>{
-	streetId: number
+	street_id: number
 }
 
 interface ApiStreet{
@@ -27,14 +27,14 @@ export class StreetsService{
 		}
 		return this._axios
 	}
-	static async getStreetsInCity(city: city): Promise<{city: city, streets: Pick<Street, 'streetId' | 'street_name'>[]}>{
+	static async getStreetsInCity(city: city): Promise<{city: city, streets: Pick<Street, 'street_id' | 'street_name'>[]}>{
 		const res = (await this.axios.post('https://data.gov.il/api/3/action/datastore_search', {resource_id:`1b14e41c-85b3-4c21-bdce-9fe48185ffca`, filters: {city_name: cities[city]}, limit: 100000})).data
 		const results = res.result.records
 		if (!results || !results.length) {
 			throw new Error('No streets found for city: ' + city)
 		}
-		const streets: Pick<Street, 'streetId' | 'street_name'>[]  = results.map((street: ApiStreet) => { 
-			return {streetId: street._id, name: street.street_name.trim()}
+		const streets: Pick<Street, 'street_id' | 'street_name'>[]  = results.map((street: ApiStreet) => { 
+			return {street_id: street._id, name: street.street_name.trim()}
 		})
 		return {city, streets}
 	}
@@ -47,7 +47,7 @@ export class StreetsService{
 		}
 		const dbStreet: ApiStreet = results[0]
 		const cityName = enlishNameByCity[dbStreet.city_name]
-		const street = {...omit<ApiStreet>(dbStreet, '_id'), streetId: dbStreet._id, city_name: cityName, region_name: dbStreet.region_name.trim(), street_name: dbStreet.street_name.trim()}
+		const street = {...omit<ApiStreet>(dbStreet, '_id'), street_id: dbStreet._id, city_name: cityName, region_name: dbStreet.region_name.trim(), street_name: dbStreet.street_name.trim()}
 		return street
 	}
 }

@@ -1,0 +1,25 @@
+{
+  "name": "line-string-service",
+  "version": "1.0.0",
+  "description": "Service to fetch line string data for Israeli streets and insert into PostgreSQL",
+  "main": "index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "ts-node index.ts",
+    "build": "tsc",
+    "dev": "nodemon consumer.ts"
+  },
+  "dependencies": {
+    "amqplib": "^0.10.8",
+    "axios": "^1.9.0",
+    "pg": "^8.11.0"
+  },
+  "devDependencies": {
+    "@types/amqplib": "^0.10.0",
+    "@types/node": "^22.15.18",
+    "@types/pg": "^8.15.2",
+    "nodemon": "^3.0.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
+  }
+}

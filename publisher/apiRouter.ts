@@ -1,4 +1,4 @@
-import { StreetsService } from "./israeliStreets";
+import { cities, StreetsService } from "./israeliStreets";
 import amqplib from 'amqplib';
 import { Router, Request, Response, RequestHandler } from "express";
 
@@ -12,9 +12,17 @@ router.post('/publish',  async (req: Request, res: Response) => {
     res.status(400).send({ error: 'City name is required' });
     return
   }
+  const city_name: string = cities[city as keyof typeof cities];
+  // add search  of similar names
+  if (!city_name) {
+    res.status(404).send({ message: `wrong city name ${city}` });
+
+  }
   try {
+
     const cityStreets = await StreetsService.getStreetsInCity(city);
-    const streets = cityStreets.streets;
+    // const streets = cityStreets.streets;
+    const streets = cityStreets.streets.slice(0, 10); // Limit to 10 streets for testing
     if (!streets || streets.length === 0) {
       res.status(404).send({ message: `No streets found for city: ${city}` });
     }

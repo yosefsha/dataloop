@@ -9,10 +9,13 @@ const connectToMongo = async () => {
 };
 
 // MongoDB schema and model
-const streetSchema = new mongoose.Schema({
-  streetId: Number,
-  street_name: String,
-});
+const streetSchema = new mongoose.Schema(
+  {
+    street_id: { type: Number, unique: true },
+    street_name: String,
+  },
+  { timestamps: true }
+);
 const Street = mongoose.model('Street', streetSchema);
 
 // Retry logic for RabbitMQ connection
@@ -38,7 +41,7 @@ const consumeFromQueue = async (channel: amqplib.Channel, queue: string) => {
 
   console.log(`Waiting for messages in queue: ${queue}`);
   interface StreetData {
-    streetId: number;
+    street_id: number;
     street_name: string;
   }
 

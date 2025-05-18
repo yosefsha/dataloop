@@ -1,78 +1,4 @@
-volumes:
-  mongo:
-  redpanda:
-networks:
-  default:
-    driver: bridge
-    # prevent conflict with openVPN connection, use dedicated subnet
-    ipam:
-      config:
-        - subnet: 172.16.57.0/24
 services:
-  # The following services are not used in the current implementation:
-  # - s2 (SingleStore)
-  # - redpanda
-  # - redpanda-ui
-  # These can be removed or commented out if not needed for future use.
-
-  # redpanda:
-  #   image: docker.redpanda.com/vectorized/redpanda:latest
-  #   command:
-  #     - redpanda start
-  #     - --smp 1
-  #     - --memory 1G
-  #     - --reserve-memory 0M
-  #     - --overprovisioned
-  #     - --node-id 0
-  #     - --check=false
-  #     - --pandaproxy-addr INSIDE://0.0.0.0:28082,OUTSIDE://0.0.0.0:8082
-  #     - --advertise-pandaproxy-addr INSIDE://redpanda:28082,OUTSIDE://localhost:8082
-  #     - --kafka-addr INSIDE://0.0.0.0:29092,OUTSIDE://0.0.0.0:9092
-  #     - --advertise-kafka-addr INSIDE://redpanda:29092,OUTSIDE://localhost:9092
-  #     - --rpc-addr 0.0.0.0:33145
-  #     - --advertise-rpc-addr redpanda:33145
-  #   volumes:
-  #     - redpanda:/var/lib/redpanda/data
-  #   ports:
-  #     - 8081:8081
-  #     - 8082:8082
-  #     - 9092:9092
-  #     - 9644:9644
-  # redpanda-ui:
-  #   image: docker.redpanda.com/vectorized/console:latest
-  #   entrypoint: /bin/sh
-  #   command: -c "echo \"$$CONSOLE_CONFIG_FILE\" > /tmp/config.yml; /app/console"
-  #   environment:
-  #     CONFIG_FILEPATH: /tmp/config.yml
-  #     CONSOLE_CONFIG_FILE: |
-  #       kafka:
-  #         brokers: ["redpanda:29092"]
-  #         schemaRegistry:
-  #           enabled: false
-  #           urls: ["http://redpanda:8081"]
-  #       redpanda:
-  #         adminApi:
-  #           enabled: true
-  #           urls: ["http://redpanda:9644"]
-  #       connect:
-  #         enabled: false
-  #         clusters:
-  #           - name: local-connect-cluster
-  #             url: http://redpanda:8083
-  #   ports:
-  #     - 8014:8080
-  #   depends_on:
-  #     - redpanda
-  # s2:
-  #   image: memsql/cluster-in-a-box:latest
-  #   environment:
-  #     - LICENSE_KEY=BDA0ZmY4MjM5MGE1ZTRjODE5ZWI4ZmYyYTQ5MmYwMzNjAAAAAAAAAAAEAAAAAAAAAAwwNQIYDAszyc7y00icQmrwoFyBISxNyjKDn73vAhkA3bqahIUESIf3NOS71yjjpU1qC1nB7u2bAA==
-  #     - ROOT_PASSWORD=Password1
-  #     - START_AFTER_INIT=true
-  #   restart: "always"
-  #   ports: 
-  #     - 3306:3306
-  #     - 8012:8080
   mongo: 
     image: mongo:4.2
     restart: always
@@ -125,3 +51,53 @@ services:
       - ME_CONFIG_MONGODB_PORT=27017
       - ME_CONFIG_BASICAUTH_USERNAME=admin
       - ME_CONFIG_BASICAUTH_PASSWORD=admin
+  postgres:
+    image: postgis/postgis:14-3.3
+    restart: always
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: streets
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./line-string-service/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  line-string-service:
+    build:
+      context: ./line-string-service
+    depends_on:
+      - postgres
+      - publisher
+    environment:
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=streets
+      - PUBLISHER_API=http://publisher:3000
+    ports:
+      - "4000:4000"
+  pgadmin:
+    image: dpage/pgadmin4
+    restart: always
+    ports:
+      - "5050:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    depends_on:
+      - postgres
+
+volumes:
+  mongo:
+  redpanda:
+  postgres_data:
+networks:
+  default:
+    driver: bridge
+    # prevent conflict with openVPN connection, use dedicated subnet
+    ipam:
+      config:
+        - subnet: 172.16.57.0/24

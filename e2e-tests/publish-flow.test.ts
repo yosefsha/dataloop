@@ -26,6 +26,7 @@ describe('E2E: Publish flow', () => {
     it('should publish streets and persist them in MongoDB', async () => {
 
     const city = 'Galgal';
+    const EXPECTED_STREET_ID = 115541
     const response = await axios.post(`${baseURL}/publish`, { city });
     expect(response.status).toBe(200);
     expect(response.data.message).toMatch(/published/i);
@@ -36,7 +37,7 @@ describe('E2E: Publish flow', () => {
     const db = mongoClient.db(dbName);
     const collection = db.collection('streets');
     
-    const streets = await collection.find({ streetId: 115541 }).toArray();
+    const streets = await collection.find({ street_id: EXPECTED_STREET_ID }).toArray();
 
     expect(streets.length).toBeGreaterThan(0);
     });
