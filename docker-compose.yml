@@ -1,17 +1,17 @@
 services:
-  mongo: 
+  mongo:
     image: mongo:4.2
     restart: always
-    ports: 
+    ports:
       - 27017:27017
     volumes:
       - mongo:/data/db
   rabbitmq:
-   image: rabbitmq:3-management
-   restart: always
-   ports:
-     - 5672:5672
-     - 15672:15672
+    image: rabbitmq:3-management
+    restart: always
+    ports:
+      - 5672:5672
+      - 15672:15672
   publisher:
     build:
       context: ./publisher
@@ -57,7 +57,7 @@ services:
     environment:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: admin
-      POSTGRES_DB: streets
+      POSTGRES_DB: streetsdb
     ports:
       - "5432:5432"
     volumes:
@@ -75,7 +75,7 @@ services:
       - POSTGRES_PORT=5432
       - POSTGRES_USER=admin
       - POSTGRES_PASSWORD=admin
-      - POSTGRES_DB=streets
+      - POSTGRES_DB=streetsdb
       - PUBLISHER_API=http://publisher:3000
     ports:
       - "4000:4000"
