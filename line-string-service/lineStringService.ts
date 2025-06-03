@@ -14,7 +14,6 @@ interface GeoJSONLineString {
 
 export class lineStringDataService {
   private pool: Pool;
-  private client!: PoolClient;
 
   constructor() {
     this.pool = new Pool({
@@ -103,6 +102,33 @@ export class lineStringDataService {
     }
   }
 
+  public async insertStreetData(data: object) {
+    const client = await this.pool.connect();
+    try {
+      await client.query("BEGIN");
+      const { street_id, street_name, street_english_name, street_hebrew_name, region_name, city_name } = data as {
+        street_id: number;
+        street_name: string;
+        street_english_name: string;
+        street_hebrew_name: string;
+        region_name: string;
+        city_name: string;
+      };
+
+      await client.query(
+        "INSERT INTO streets (street_id, street_name, street_english_name, street_hebrew_name, region_name, city_name) VALUES ($1, $2, $3, $4, $5, $6)",
+        [street_id, street_name, street_english_name, street_hebrew_name, region_name, city_name]
+      );
+      await client.query("COMMIT");
+      console.log(`Inserted LineString into PostgreSQL`);
+    } catch (err) {
+      await client.query("ROLLBACK");
+      throw new Error(`Error inserting LineStrings: ${err}`);
+    } finally {
+      client.release();
+    }
+  }
+
   private extractCityAndStreetFromMessage(msg: amqplib.ConsumeMessage) {
     const strMessage = msg.content.toString();
     console.info("Received street message raw:", strMessage);
@@ -126,7 +152,10 @@ export class lineStringDataService {
         try {
           const strMessage = msg.content.toString();
           console.info("Received street message raw:", strMessage);
-          const { city_name, street_english_name } = JSON.parse(strMessage);
+          const parsedMessage = JSON.parse(strMessage);
+          this.insertStreetData(parsedMessage);
+          console.info("Saved to street datat to db:", parsedMessage);
+          const { street_english_name, city_name } = parsedMessage;
           console.info(`will get line string for ${street_english_name} in ${city_name}`);
           const line = await this.getStreetLine(street_english_name, city_name);
           console.info(`Did get line for ${street_english_name} in ${city_name}`);

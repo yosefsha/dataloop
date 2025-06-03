@@ -35,32 +35,34 @@ const connectToRabbitMQ = async (uri: string, retries = 5, delay = 5000) => {
   throw new Error("Exhausted retries for RabbitMQ connection");
 };
 
+interface StreetData {
+  street_id: number;
+  street_name: string;
+}
+
 // RabbitMQ consumer logic
 const consumeFromQueue = async (channel: amqplib.Channel, queue: string) => {
   await channel.assertQueue(queue, { durable: true });
-
   console.log(`Waiting for messages in queue: ${queue}`);
-  interface StreetData {
-    street_id: number;
-    street_name: string;
-  }
 
   channel.consume(queue, async (msg: amqplib.ConsumeMessage | null) => {
     if (msg) {
-      console.log("Received message raw:", msg.content.toString());
-      const streetData: StreetData = JSON.parse(msg.content.toString());
-
-      console.log("Received message:", streetData);
-
-      // Save to MongoDB
-      const street = new Street(streetData);
-      await street.save();
-      console.log("Saved to MongoDB:", street.toObject());
-      console.log("Saved to MongoDB json:", JSON.stringify(street.toObject(), null, 2));
-
+      console.debug("Received message raw:", msg.content.toString());
+      const parsedMessage = JSON.parse(msg.content.toString());
+      await saveToMongo(parsedMessage);
+      // await saveToPostgres(parsedMessage); // this is the actual saving to postgres
+      console.info("Saved to db:", parsedMessage);
       channel.ack(msg);
     }
   });
+};
+
+const saveToMongo = async (data: object) => {
+  const streetData: StreetData = data as StreetData;
+  // Save to MongoDB
+  const street = new Street(streetData);
+  await street.save();
+  console.log("Saved to MongoDB:", street.toObject());
 };
 
 // Main function

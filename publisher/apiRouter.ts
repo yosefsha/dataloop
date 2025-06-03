@@ -20,7 +20,7 @@ router.post("/publish", async (req: Request, res: Response) => {
   try {
     const cityStreets = await StreetsService.getStreetsInCity(city);
     // const streets = cityStreets.streets;
-    const streets = cityStreets.streets.slice(0, 10); // Limit to 10 streets for testing
+    const streets = cityStreets.streets.slice(0, 1000); // Limit to 10 streets for testing
     if (!streets || streets.length === 0) {
       res.status(404).send({ message: `No streets found for city: ${city}` });
     }
